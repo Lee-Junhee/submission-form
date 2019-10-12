@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Login Page</title>
+	</head>
+	<body>
+		<form action="/auth" method="post">
+			Enter your submodule's name:<br>
+			<input type="text" name="user" value="obamaBar"><br>
+			Period:<br>
+			{% for num in pds %}
+			<input type="radio" name='pd' value={{num}}>{{num}}<br>
+			{% endfor %}
+			<input type="submit" value="Proceed">
+		</form>
+	</body>
+</html>
+

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Submodule Submission</title>
+	</head>
+	<body>
+		{% for item in get_flashed_messages() %}
+		{{item}}
+		<br>
+		<br>
+		{% endfor %}
+		<form action="/submit" method="post">
+			Select assignment:<br>
+			{% for item in assignments %}
+			<input type="radio" name="id" value={{item}}>{{item}}
+			<br>
+			{% endfor %}
+			Enter the GitHub repository URL:<br>
+			<input type="text" name="url"><br>
+			<input type="submit" value="Create Submodule!">
+		</form>
+		<br>
+		<br>
+		<form action="/logout">
+			<input type="submit" value="Log in as another user">
+		</form>
+	</body>
+</html>
