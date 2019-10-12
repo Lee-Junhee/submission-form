@@ -1,12 +1,11 @@
 from flask import Flask, flash, render_template, redirect, session, request
-import subprocess
+import subprocess, csv
 
 app = Flask(__name__)
 app.secret_key = "hi" 
 
-work = {
-        'testRepo':'https://github.com/Lee-Junhee/testRepo.git'
-        }
+work = {}
+
 pdlist=['04','05','10']
 
 @app.route("/")
@@ -14,6 +13,10 @@ def main():
     if not 'user' in session:
         return render_template("login.html",
                 pds=pdlist)
+    with open("assignmntRepos.csv", newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            work[row['name']] = row['ssh']
     return render_template("submission.html",
             assignments=work.keys())
 

@@ -5,17 +5,17 @@
 	</head>
 	<body>
 		{% for item in get_flashed_messages() %}
-		{{item}}
+		<i>{{item}}</i>
 		<br>
 		<br>
 		{% endfor %}
 		<form action="/submit" method="post">
-			Select assignment:<br>
+			<b>Select assignment:</b><br>
 			{% for item in assignments %}
 			<input type="radio" name="id" value={{item}}>{{item}}
 			<br>
 			{% endfor %}
-			Enter the GitHub repository URL:<br>
+			<b>Enter the GitHub repository URL:</b><br>
 			<input type="text" name="url"><br>
 			<input type="submit" value="Create Submodule!">
 		</form>
