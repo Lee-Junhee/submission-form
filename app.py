@@ -2,7 +2,9 @@ from flask import Flask, flash, render_template, redirect, session, request
 import subprocess, csv
 
 app = Flask(__name__)
-app.secret_key = "hi" 
+secretkey = open("secretkey.txt", 'r')
+app.secret_key =  secretkey.read()
+secretkey.close()
 
 work = {}
 
@@ -33,19 +35,27 @@ def logout():
 
 @app.route("/submit", methods=['POST'])
 def submit():
-    attempt(request.form['url'],request.form['id'])
-    flash("Sucessfully Created Submodule!")
+    err = attempt(request.form['url'],request.form['id'])
+    print(session['user'] + " created submodule in " + session['pd'] +" linked to "+request.form['url'])
+    if err == 0:
+        flash("Sucessfully Created Submodule!")
+    if err == 1:
+        flash("Submodule failed to create, check information and try again.")
+    if err == 2:
+        flash("Bad timing, try again")
     return redirect('/')
 
 def attempt(sub, repo):
-    error = None
     subprocess.run(['git','clone', work[repo]])
-    subprocess.run(['git', 'submodule', 'add', sub, session['user']], cwd="./"+repo+"/"+session['pd'])
+    add = subprocess.run(['git', 'submodule', 'add', sub, session['user']], cwd="./"+repo+"/"+session['pd'])
     subprocess.run(['git', 'commit', '-am', "added submodule"], cwd="./"+repo+"/"+session['pd'])
-    subprocess.run(['git', 'push'], cwd="./"+repo+"/"+session['pd'])
+    push = subprocess.run(['git', 'push'], cwd="./"+repo+"/"+session['pd'])
     subprocess.run(['rm', '-rf', repo])
-    
+    if add.returncode != 0:
+        return 1
+    if push.returncode != 0:
+        return 2
+    return 0
 
 if __name__ == "__main__":
-    app.debug = True
-    app.run()
+    app.run(host='0.0.0.0')
