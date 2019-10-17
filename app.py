@@ -4,8 +4,6 @@ import subprocess, csv, time
 app = Flask(__name__)
 app.secret_key = "super secret key"
 
-log = open("log.csv", "a+")
-
 pdlist={
         "systems":['04','05','10'],
         "softdev":['01','02','09']
@@ -59,12 +57,16 @@ def logout():
 def submit():
     if session['submodule'] == "obamaBar":
         flash("Please change submodule name from default")
+    elif request.form['url'].startswith("https://github.com/")
+        flash("Please use the HTTPS clone url from github")
     else:
         err = attempt(request.form['url'],request.form['id'])
         print(session['user'] + " created submodule in " + session['pd'] +" linked to "+request.form['url'])
         if err == 0:
             flash("Sucessfully Created Submodule!")
-            log.write("\n" + str(time.localtime()) +","+ str(request.remote_addr) +","+ session['submodule'] +','+ request.form['id'])
+            with open("log.csv", "a") as log:
+                t = time.strftime("%Y-%b-%d %h:%M:%S", localtime())
+                log.write("\n" + t +","+ str(request.remote_addr) +","+ session['submodule'] +','+ request.form['id'])
         if err == 1:
             flash("Submodule failed to create, check information and try again.")
         if err == 2:
