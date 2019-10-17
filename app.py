@@ -57,7 +57,7 @@ def logout():
 def submit():
     if session['submodule'] == "obamaBar":
         flash("Please change submodule name from default")
-    elif request.form['url'].startswith("https://github.com/")
+    elif request.form['url'].startswith("https://github.com/"):
         flash("Please use the HTTPS clone url from github")
     else:
         err = attempt(request.form['url'],request.form['id'])
