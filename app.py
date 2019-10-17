@@ -52,7 +52,8 @@ def login():
 
 @app.route('/logout')
 def logout():
-    del session['user']
+    print("{}@{}: logout".format(session['submodule'], request.remote_addr))
+    del session['submodule']
     return redirect('/' + session['mode'])
 
 @app.route('/submit', methods=['POST'])
