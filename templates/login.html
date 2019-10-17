@@ -5,8 +5,14 @@
 	</head>
 	<body>
 		<form action="/auth" method="post">
+			Enter your GitHub username and email (optional):<br>
+			Username:
+			<input type="text" name="user"><br>
+			Email:
+			<input type="text" name="email">
+			<br><br>
 			Enter your submodule's name:<br>
-			<input type="text" name="user" value="obamaBar"><br>
+			<input type="text" name="submodule" value="obamaBar"><br>
 			Period:<br>
 			{% for num in pds %}
 			<input type="radio" name='pd' value={{num}}>{{num}}<br>
