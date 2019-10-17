@@ -25,7 +25,8 @@ def sdhome():
 #base
 def home(site):
     session['mode'] = site
-    if not 'user' in session:
+    if not 'submodule' in session:
+        print("Anon@{}: access {}".format(request.remote_addr, site))
         return render_template("login.html",
                 pds=pdlist[site])
     with open(site + "Repos.csv", newline='') as csvfile:
@@ -33,6 +34,7 @@ def home(site):
         reader = csv.DictReader(csvfile)
         for row in reader:
             session['work'][row['name']] = row['ssh']
+        print("{}@{}: access {}".format(session['submodule'], request.remote_addr, site))
     return render_template("submission.html",
             assignments=session['work'].keys(),
             submodule=session['submodule'])
@@ -56,21 +58,23 @@ def logout():
 @app.route('/submit', methods=['POST'])
 def submit():
     if session['submodule'] == "obamaBar":
-        flash("Please change submodule name from default")
-    elif request.form['url'].startswith("https://github.com/"):
-        flash("Please use the HTTPS clone url from github")
+        msg = "Please change submodule name from default"
+    elif not request.form['url'].startswith("https://github.com/"):
+        msg = "Please use the HTTPS clone url from github"
     else:
         err = attempt(request.form['url'],request.form['id'])
         print(session['user'] + " created submodule in " + session['pd'] +" linked to "+request.form['url'])
         if err == 0:
-            flash("Sucessfully Created Submodule!")
+            msg = "Sucessfully Created Submodule!"
             with open("log.csv", "a") as log:
                 t = time.strftime("%Y-%b-%d %h:%M:%S", localtime())
                 log.write("\n" + t +","+ str(request.remote_addr) +","+ session['submodule'] +','+ request.form['id'])
         if err == 1:
-            flash("Submodule failed to create, check information and try again.")
+            msg = "Submodule failed to create, check information and try again."
         if err == 2:
-            flash("Bad timing, try again")
+            msg = "Bad timing, try again"
+    print("{}@{}: as {} recieved message \"{}\"".format(session['submodule'], request.remote_addr, session['user'], msg))
+    flash(msg)
     return redirect('/' + session['mode'])
 
 def attempt(sub, repo):
