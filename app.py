@@ -81,7 +81,7 @@ def submit():
 def attempt(sub, repo):
     subprocess.run(['git', 'config', '--global', 'user.name', session['user']])
     subprocess.run(['git', 'config', '--global', 'user.email', session['email']])
-    subprocess.run(['git','clone', session['work'][repo]])
+    subprocess.run(['git','clone', session['work'][repo], repo])
     add = subprocess.run(['git', 'submodule', 'add', sub, session['submodule']], cwd="./"+repo+"/"+session['pd'])
     subprocess.run(['git', 'commit', '-am', "added submodule " + session['submodule']], cwd="./"+repo+"/"+session['pd'])
     push = subprocess.run(['git', 'push'], cwd="./"+repo+"/"+session['pd'])
