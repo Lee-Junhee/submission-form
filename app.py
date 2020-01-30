@@ -11,7 +11,8 @@ pdlist={
 
 @app.route("/")
 def root():
-    return "root"
+    return render_template('main.html')
+
 #systems
 @app.route("/systems/")
 def syhome():
@@ -68,8 +69,9 @@ def submit():
         if err == 0:
             msg = "Sucessfully Created Submodule!"
             with open("log.csv", "a") as log:
-                t = time.strftime("%Y-%b-%d %h:%M:%S", localtime())
+                t = time.strftime("%Y-%b-%d %h:%M:%S", time.localtime())
                 log.write("\n" + t +","+ str(request.remote_addr) +","+ session['submodule'] +','+ request.form['id'])
+                log.close()
         if err == 1:
             msg = "Submodule failed to create, check information and try again."
         if err == 2:
@@ -83,8 +85,10 @@ def attempt(sub, repo):
     subprocess.run(['git', 'config', '--global', 'user.email', session['email']])
     subprocess.run(['git','clone', session['work'][repo], repo])
     add = subprocess.run(['git', 'submodule', 'add', sub, session['submodule']], cwd="./"+repo+"/"+session['pd'])
+    print(add)
     subprocess.run(['git', 'commit', '-am', "added submodule " + session['submodule']], cwd="./"+repo+"/"+session['pd'])
     push = subprocess.run(['git', 'push'], cwd="./"+repo+"/"+session['pd'])
+    print(push)
     subprocess.run(['rm', '-rf', repo])
     if add.returncode != 0:
         return 1
